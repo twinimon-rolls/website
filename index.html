@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twinimon Rolls | Join Our Discord Today!</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <style>
+    :root {
+      --discord-blue: #5865F2;
+      --accent-pink: #eb459e;
+      --text-muted: #a0a0b8;
+      --bg-card: #232339;
+    }
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+    }
+    .badge {
+      background: rgba(235, 69, 158, 0.15);
+      border: 1px solid rgba(235, 69, 158, 0.4);
+      color: var(--accent-pink);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 25px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(235, 69, 158, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(235, 69, 158, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(235, 69, 158, 0); }
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      max-width: 900px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--discord-blue) 0%, var(--accent-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .section {
+      padding: 120px 10%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 80px auto;
+    }
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px;
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .card:hover::before {
+      opacity: 1;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(88, 101, 242, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      color: var(--discord-blue);
+    }
+    .card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .leaders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 36px;
+      margin-top: 60px;
+      margin-bottom: 30px;
+      justify-items: center;
+    }
+    .leader-card {
+      background: var(--bg-card, #191925);
+      border: 1px solid rgba(88,101,242,0.1);
+      border-radius: 24px;
+      padding: 32px 30px 26px 30px;
+      text-align: center;
+      box-shadow: 0 2px 16px 0 rgba(30,30,50,0.07);
+      max-width: 350px;
+      width: 100%;
+      transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .leader-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .leader-card:hover::before {
+      opacity: 1;
+    }
+    .leader-card:hover {
+      box-shadow: 0 10px 24px rgba(0,0,0,0.15);
+      transform: translateY(-8px) scale(1.035);
+      border: 1.5px solid var(--discord-blue, #5865F2);
+    }
+    .leader-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 18px;
+      border: 3px solid var(--accent-pink, #eb459e);
+      box-shadow: 0 4px 18px rgba(235, 69, 158, 0.1);
+      background: #fff;
+    }
+    .leader-name {
+      font-size: 1.24rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+    .leader-role {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--accent-pink, #eb459e);
+      margin-bottom: 13px;
+    }
+    .leader-desc {
+      color: var(--text-muted, #a0a0b8);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+    .leader-card .leader-desc a {
+      color: var(--accent-pink, #eb459e);
+      text-decoration: underline;
+      transition: color 0.2s;
+      word-break: break-all;
+    }
+    .leader-card .leader-desc a:hover,
+    .leader-card .leader-desc a:focus {
+      color: var(--discord-blue, #5865F2);
+      text-decoration: underline;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, rgba(88, 101, 242, 0.2) 0%, rgba(235, 69, 158, 0.2) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      padding: 80px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+    }
+    .cta-box h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .cta-box p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px auto;
+      font-size: 1.1rem;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (max-width: 1060px) {
+      .leaders-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+    }
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+      .section {
+        padding: 80px 5%;
+      }
+      .cta-box {
+        padding: 50px 20px;
+      }
+      .leaders-grid {
+        gap: 18px;
+      }
+    }
+    @media (max-width: 500px) {
+      .leader-card {
+        padding: 22px 8px 18px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <div class="badge">👋 Welcome Twinimons!</div>
+    <h1>Welcome To The <span>Twinimon Rolls</span></h1>
+    <p>A Discord community for Artists, Choose factions, Compete with the Leaderboard. Join the 100+ Members today.</p>
+    <div class="hero-buttons">
+      <a href="landing-page.html" class="btn btn-discord">Join us Now</a>
+      <a href="#about" class="btn btn-outline">Learn More ↓</a>
+    </div>
+  </main>
+
+  <section id="about" class="section reveal">
+    <div class="section-header">
+      <h2>About The Community</h2>
+      <p>Get to know us better</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon">💙</div>
+        <h3>We accept Anyone!</h3>
+        <p>We are not here to disgrace. We support everybody and give everyone a seat in our server! We support ages 13 and up. And we have a loyal memberbase.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤝</div>
+        <h3>Community</h3>
+        <p>Our Members are all welcoming and helpful! Always willing to help you out around the server or you can just look for mods or owners.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏆</div>
+        <h3>Leaderboard Bonus</h3>
+        <p>People who particpate and chat the most get exclusive leaderboard roles. Such as a Semi-mod Role or a President of Twinimon Rolls Role.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="section reveal">
+    <div class="section-header">
+      <h2>Why You'll Love It Here</h2>
+      <p>Why wouldn't you?</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>PokeTwo</h3>
+        <p>We have the PokeTwo System setup where you can collect, Evolve, And use Pokemons of your choice within the discord, Use them while chatting to level them up.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏆</div>
+        <h3>Leveling System</h3>
+        <p>We have a leveling system using the Arcane bot that you can earn XP By chatting in the server. By catching Pokemons, Adding Reactions, Etc. Also get a XP bonus when bumping every 2 hours.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👩‍🌾</div>
+        <h3>Custom Roles</h3>
+        <p>Large collection of Self Roles, You can choose your age range, Locations, Choose Name Colors, Choose Pronouns, Choose Custom character factions, And alot more!</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎨</div>
+        <h3>Artists & Creativity</h3>
+        <p>Everyone here is always likely to respond. We have dedicated art channels for people to submit their artwork. Showcase drawings etc. Or just simply chat or use our music bots.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎵</div>
+        <h3>Music & Jams</h3>
+        <p>Join our music channels to share your favorite songs, listen together with friends using music bots, or even showcase and discuss your own music. or just simply vibe out by yourself!</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎮</div>
+        <h3>Gaming Channels</h3>
+        <p>Channels for Gamers, Discuss Game related topics, We have media channels where you can share and discuss about gaming, Plenty of Voice Channels Members can freely join at anytime!</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leadership" class="section reveal">
+    <div class="section-header">
+      <h2>Server Leadership</h2>
+      <p>Meet our moderators and admins</p>
+    </div>
+    <div class="leaders-grid">
+      <div class="leader-card">
+        <img src="assets/profile-pictures/rushabh.png" alt="Rushabh profile picture" class="leader-avatar" />
+        <div class="leader-name">Rushabh</div>
+        <div class="leader-role">Server Owner</div>
+        <div class="leader-desc">No Description Yet.</div>
+      </div>
+      <div class="leader-card">
+        <img src="assets/profile-pictures/ana.png" alt="Ana profile picture" class="leader-avatar" />
+        <div class="leader-name">Ana</div>
+        <div class="leader-role">Head Server Manager</div>
+        <div class="leader-desc">No Description Yet.</div>
+      </div>
+      <div class="leader-card">
+        <img src="assets/profile-pictures/youngdollazz.png" alt="YoungDollazz profile picture" class="leader-avatar" />
+        <div class="leader-name">YoungDollazz</div>
+        <div class="leader-role">Head Server Manager</div>
+        <div class="leader-desc"><a href="card-central/youngdollazz/index.html">Card Central Link</a></div>
+      </div>
+      <div class="leader-card">
+        <img src="assets/profile-pictures/auggie.png" alt="Auggie profile picture" class="leader-avatar" />
+        <div class="leader-name">Auggie</div>
+        <div class="leader-role">Semi-Moderator</div>
+        <div class="leader-desc">No Description Yet.</div>
+      </div>
+      <div class="leader-card">
+        <img src="assets/profile-pictures/peanut-butter.png" alt="Peanut Butter profile picture" class="leader-avatar" />
+        <div class="leader-name">Peanut Butter</div>
+        <div class="leader-role">Semi-Moderator</div>
+        <div class="leader-desc">No Description Yet.</div>
+      </div>
+      <div class="leader-card">
+        <div class="leader-name">AND MORE!</div>
+        <div class="leader-role">Join Our Discord and have your name here one day!</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="community" class="section reveal">
+    <div class="cta-box">
+      <h2>Ready to Join?</h2>
+      <p>Download Discord, log in, and use our server link!</p>
+      <a href="landing-page.html" class="btn btn-discord" style="padding: 16px 40px; font-size: 1.1rem;">
+        Join Twinimon Rolls on Discord
+      </a>
+    </div>
+  </section>
+
+  <script>
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,
+      threshold: 0.15,
+      rootMargin: "0px"
+    });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+    document.querySelectorAll('.leader-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+  </script>
+
+  <script src="scripts/snowfall.js"></script>
+  <script src="scripts/monkey.js"></script>
+  <script src="componets.js"></script>
+</body>
+</html>
