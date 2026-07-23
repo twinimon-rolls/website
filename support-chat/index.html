@@ -31,12 +31,20 @@
       min-width: 100vw;
     }
 
-    .chat-container {
+    .app-layout {
       width: 100vw;
       height: 100vh;
-      background-color: #1a1a1a;
+      display: flex;
+      background-color: #111;
+      overflow: hidden;
+    }
+
+    .chat-container {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
+      background-color: #1a1a1a;
       overflow: hidden;
       position: relative;
     }
@@ -55,30 +63,65 @@
       z-index: 2;
       position: relative;
       box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.10);
+      justify-content: space-between;
     }
-    .back-home-btn {
-      position: absolute;
-      right: 24px;
-      top: 20px;
-      background: #000000;
-      color: #7ae1fa;
-      border: 1px solid transparent;
-      outline: none;
-      border-radius: 5px;
-      padding: 8px 16px;
-      font-size: 0.98rem;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.18s, color 0.18s;
-      z-index: 10;
+
+    .chat-header-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
     }
-    .back-home-btn:hover,
-    .back-home-btn:focus {
-      background: #353535;
-      color: #fff;
-      border: 1px solid rgb(172, 172, 172);
-      text-decoration: none;
+
+    .chat-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 36px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-height: 0;
+      max-height: calc(100vh - 132px);
+      box-sizing: border-box;
+      scrollbar-gutter: stable;
+    }
+
+    @media (max-width: 960px) {
+      .chat-container {
+        width: 100%;
+      }
+
+      .chat-header {
+        padding: 18px 18px;
+      }
+
+      .chat-body {
+        padding: 24px 18px;
+      }
+
+      .chat-footer {
+        padding: 18px 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .chat-header {
+        padding: 14px 16px;
+      }
+
+      .chat-body {
+        padding: 18px 14px;
+      }
+
+      .chat-footer {
+        padding: 14px 14px;
+      }
     }
 
     .ai-icon {
@@ -339,13 +382,18 @@
 </head>
 <body>
 
-  <div class="chat-container">
-    <div class="chat-header">
-      <img class="ai-icon" src="assets/favicon.png" alt="">
-      <span class="ai-name">Twinimon Support</span>
-      <a href="../index.html" class="back-home-btn" title="Back to Home">&#8592; Back to Home</a>
-    </div>
-    <div class="chat-body" id="chat-body">
+  <div class="app-layout">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-inner">
+          <img class="ai-icon" src="assets/favicon.png" alt="">
+          <span class="ai-name">Twinimon Support</span>
+        </div>
+        <div class="chat-header-right">
+          <button class="sidebar-toggle" id="sidebar-open" aria-label="Open menu">☰</button>
+        </div>
+      </div>
+      <div class="chat-body" id="chat-body">
       <div class="message-wrapper bot">
         <div class="sender-label">Twinimon Support</div>
         <div class="message bot-message">
@@ -516,6 +564,13 @@
       }
     }
 
+    function resetChat() {
+      chatBody.innerHTML = '';
+      addMessage(`Hello. I am the virtual support assistant for Twinimon Rolls! How can I help you today?<br>
+          Also I am currently in Beta. The current loaded code is Ver 1.0.0. New updates and responses will be added in the future.<br><br>
+          This is a PromptPad. You can select topics by clicking the message box but cannot type direct messages. This is a static PromptPad.`, 'bot');
+    }
+
     function addMessage(text, sender, opts = {}) {
       const wrapperDiv = document.createElement('div');
       wrapperDiv.className = `message-wrapper ${sender}`;
@@ -612,6 +667,7 @@
       typeWriterAnimation(chunks);
     }
   </script>
+  <script src="navbar.js"></script>
   <script src="../scripts/snowfall.js"></script>
 </body>
 </html>

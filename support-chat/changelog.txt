@@ -1,0 +1,5 @@
+Ver 1.1.1 - - -
+New Navigation Menu Side Panel. 
+
+Ver 1.0.0 - - -
+Released. Chat Bot. Questions.
