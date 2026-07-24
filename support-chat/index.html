@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Twinimon Rolls - Support Chat</title>
+  <link rel="icon" type="image/png" href="../assets/monkey.png">
+  <link rel="manifest" href="../manifest.json">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #111;
+      color: #e0e0e0;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: stretch;
+      align-items: stretch;
+      min-height: 100vh;
+      min-width: 100vw;
+    }
+
+    .app-layout {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      background-color: #111;
+      overflow: hidden;
+    }
+
+    .chat-container {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: #1a1a1a;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-header {
+      padding: 24px 32px 24px 28px;
+      border-bottom: 1px solid #333;
+      font-size: 1.22rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 70px;
+      background: #181818;
+      z-index: 2;
+      position: relative;
+      box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.10);
+      justify-content: space-between;
+    }
+
+    .chat-header-inner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .chat-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 36px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-height: 0;
+      max-height: calc(100vh - 132px);
+      box-sizing: border-box;
+      scrollbar-gutter: stable;
+    }
+
+    @media (max-width: 960px) {
+      .chat-container {
+        width: 100%;
+      }
+
+      .chat-header {
+        padding: 18px 18px;
+      }
+
+      .chat-body {
+        padding: 24px 18px;
+      }
+
+      .chat-footer {
+        padding: 18px 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .chat-header {
+        padding: 14px 16px;
+      }
+
+      .chat-body {
+        padding: 18px 14px;
+      }
+
+      .chat-footer {
+        padding: 14px 14px;
+      }
+    }
+
+    .ai-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 6px;
+      border: 2px solid #222;
+      background: #383838;
+    }
+    .ai-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .ai-name {
+      font-size: 1.09rem;
+      font-weight: 500;
+      color: #7ae1fa;
+      letter-spacing: 0.01em;
+      user-select: none;
+      margin-left: 2px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 36px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-height: 0;
+      max-height: calc(100vh - 132px);
+      box-sizing: border-box;
+      scrollbar-gutter: stable;
+    }
+
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 85%;
+    }
+
+    .message-wrapper.bot {
+      align-self: flex-start;
+    }
+
+    .message-wrapper.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .sender-label {
+      font-size: 0.85rem;
+      color: #888;
+      padding: 0 5px;
+    }
+
+    .message {
+      padding: 14px 18px;
+      border-radius: 8px;
+      line-height: 1.5;
+      font-size: 0.97rem;
+    }
+
+    .bot-message {
+      background-color: #222;
+      border: 1px solid #333;
+      color: #e0e0e0;
+    }
+
+    .user-message {
+      background-color: #2c2c2c;
+      border: 1px solid #444;
+      color: #fff;
+    }
+
+    .chat-link {
+      color: #7ae1fa;
+      text-decoration: none;
+      padding: 1px 2px;
+      border-bottom: 1.5px solid #7ae1fa;
+      border-radius: 2px;
+      transition: color 0.13s, border-bottom-color 0.13s, background 0.13s;
+    }
+    .chat-link:hover,
+    .chat-link:focus {
+      color: #fff;
+      background: none;
+      border-bottom-color: #fff;
+      text-decoration: none;
+      outline: none;
+    }
+
+    .chat-footer {
+      padding: 24px 32px;
+      border-top: 1px solid #333;
+      position: relative;
+      background-color: #1a1a1a;
+      z-index: 1;
+    }
+
+    .typing-indicator {
+      position: absolute;
+      left: 32px;
+      bottom: 100%;
+      margin-bottom: 8px;
+      color: #9ad3fa;
+      font-size: 0.99rem;
+      font-style: italic;
+      opacity: 1;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      z-index: 15;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .typing-indicator.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s;
+    }
+
+    .typing-dots {
+      display: inline-block;
+      font-size: 1.3em;
+      width: 22px;
+      height: 1em;
+      vertical-align: middle;
+      letter-spacing: 1px;
+    }
+    .typing-dots span {
+      animation: blink 1.2s infinite both;
+      opacity: 0.7;
+    }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes blink {
+      0%, 100% {
+        opacity: 0.7;
+      }
+      25% {
+        opacity: 1;
+      }
+      75% {
+        opacity: 0.3;
+      }
+    }
+
+    .fake-input,
+    .search-input {
+      background-color: #222;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 18px 24px;
+      font-size: 1.02rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fake-input {
+      color: #888;
+      cursor: pointer;
+    }
+
+    .fake-input:hover {
+      background-color: #2a2a2a;
+      border-color: #555;
+      color: #aaa;
+    }
+
+    .search-input {
+      display: none;
+      color: #e0e0e0;
+      width: 100%;
+      outline: none;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 8px;
+      margin-right: 0;
+    }
+
+    .search-input.active {
+      display: flex;
+    }
+
+    .options-menu {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 32px;
+      right: 32px;
+      background-color: #222;
+      border: 1px solid #444;
+      border-radius: 8px;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.4);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 10;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .options-menu.active {
+      display: flex;
+    }
+
+    .option-btn {
+      padding: 16px 20px;
+      border: none;
+      background: transparent;
+      border-bottom: 1px solid #333;
+      text-align: left;
+      cursor: pointer;
+      color: #d0d0d0;
+      font-size: 1rem;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .option-btn:last-child {
+      border-bottom: none;
+    }
+
+    .option-btn:hover {
+      background-color: #2a2a2a;
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-header-inner">
+          <img class="ai-icon" src="assets/favicon.png" alt="">
+          <span class="ai-name">Twinimon Support</span>
+        </div>
+        <div class="chat-header-right">
+          <button class="sidebar-toggle" id="sidebar-open" aria-label="Open menu">☰</button>
+        </div>
+      </div>
+      <div class="chat-body" id="chat-body">
+      <div class="message-wrapper bot">
+        <div class="sender-label">Twinimon Support</div>
+        <div class="message bot-message">
+          Hello. I am the virtual support assistant for Twinimon Rolls! How can I help you today?<br>
+          Also I am currently in Beta. The current loaded code is Ver 1.2.1. New updates and responses will be added in the future.<br><br>
+          This is a PromptPad. You can select topics by clicking the message box but cannot type direct messages. This is a static PromptPad. Not AI
+        </div>
+      </div>
+    </div>
+    <div class="chat-footer">
+      <div class="typing-indicator hidden" id="typing-indicator">
+        <span>Twinimon Support is typing</span>
+        <span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>
+      </div>
+      <div class="options-menu" id="options-menu">
+        <input type="text" id="search-input" class="search-input" placeholder="Search questions..." autocomplete="off" spellcheck="false" />
+        <button class="option-btn" data-topic="joinrolls">How to Join Twinimon Rolls?</button>
+        <button class="option-btn" data-topic="poketwoguidebook">PokéTwo Guide?</button>
+        <button class="option-btn" data-topic="applynow">Moderator applications/Apply now/Join The Team</button>
+        <button class="option-btn" data-topic="somethingswrong">Something is wrong with the Website/Assistance</button>
+        <button class="option-btn" data-topic="bump">How to Bump Us In the Discord Server</button>
+        <button class="option-btn" data-topic="xpmethod1">How to level up and Get XP Faster</button>
+        <button class="option-btn" data-topic="selfroles">How to get Self Roles in the Discord Server</button>
+        <button class="option-btn" data-topic="suggestion">I have a suggestion for the website or server</button>
+        <button class="option-btn" data-topic="whoareyou">Who are you?</button>
+        <button class="option-btn" data-topic="staticstats">What are your static stats?</button>
+        <button class="option-btn" data-topic="thelore">Explain the backstory/lore Behind Twinimons.</button>
+        <button class="option-btn" data-topic="unbanappeal">How to submit an Unban/Banned Appeal?</button>
+        <button class="option-btn" data-topic="userphone">How to use the User Phone in the Discord Server</button>
+      </div>
+      <div class="fake-input" id="fake-input">
+        <span>Message Twinimon Support...</span>
+        <span style="font-size: 1.2rem;">&#8679;</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fakeInput = document.getElementById('fake-input');
+    const inputPlaceholder = fakeInput.querySelector('span');
+    const optionsMenu = document.getElementById('options-menu');
+    const chatBody = document.getElementById('chat-body');
+    const optionButtons = document.querySelectorAll('.option-btn');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const searchInput = document.getElementById('search-input');
+
+    const allQuestions = [
+      { text: "How to Join Twinimon Rolls?", topic: "joinrolls" },
+      { text: "How to use & play PokeTwo?", topic: "poketwoguidebook" },
+      { text: "Something is wrong with the Website/Assistance The Support Bot", topic: "somethingswrong" },
+      { text: "How to Bump Us In the Discord Server", topic: "bump" },
+      { text: "How to level up and Get XP Faster", topic: "xpmethod1" },
+      { text: "How to get Self Roles in the Discord Server", topic: "selfroles" },
+      { text: "Who are you?", topic: "whoareyou" },
+      { text: "I have a suggestion for the website or server", topic: "suggestion" },
+      { text: "What are static stats?", topic: "staticstats" },
+      { text: "Moderator applications/Apply now/Join The Team", topic: "applynow" },
+      { text: "Explain the backstory/lore Behind Twinimons.", topic: "thelore" },
+      { text: "How to submit an Unban/Banned Appeal?", topic: "unbanappeal" },
+      { text: "How to use the User Phone in the Discord Server", topic: "userphone" }
+    ];
+
+    const botResponses = {
+      poketwoguidebook: "If you're needing help with PokéTwo you can simply refer to the beginners guide below or Ping a Owner in the server.<br><br>How To Claim Your Starter<br><br>Enter the catching-bot-commands channel in the catching subcategory of channels and type: “@Pokétwo start”<br>In the same channel type “@Pokétwo pick” and then the name of the starter Pokémon you want, for example “@Pokétwo pick Squirtle”<br>Players can then view their starter Pokemon stats by inspecting their new Pokemon with the command “@Pokétwo info” or the shorter “@Pokétwo i” and rename it if they want using the nickname command function.<br><br>How To Use PokeTwo Bot Commands<br><br>All commands are used by tagging the @Poketwo bot then entering the applicable command in the chat which supports both US and UK spelling.<br>Tagging the bot is the same as tagging any other Discord bot or person by typing @ and selecting PokeTwo (currently userid Pokétwo#8236). This can be made faster by copying and pasting the “@poketwo” and any applicable command into the chat instead.<br><br>PokeTwo – How To Catch A Pokémon<br><br>Catching is the primary source of new Pokémon to complete your collection alongside evolution and trading. In order to catch a Pokémon:<br>Visit one of the Pokémon spawn or incense channels under the catching subcategory of channels. Each of these channels will occasionally spawn a wild Pokemon with a picture appearing on screen.<br>In order to capture a Pokemon you must be the first user to type “@Pokétwo catch” and the Pokémon name.<br>For example catching a Marowak that has appeared would be “@Pokétwo catch Marowak”. Catch can also be replaced with the letter “c”.<br><br>For more Guidance refer to this post: <a href='https://gameslikefinder.com/article/poketwo-commands-list/' class='chat-link' target='_blank'>Click Here to Learn More</a>",
+      somethingswrong: "If you see something wrong/missing on our website or in my responses, Please visit our discord and submit a ticket :) <a href='https://twinimon-rolls.github.io/website/landing-page.html' class='chat-link' target='_blank'>Join Discord</a>",
+      joinrolls: "To Join Twinimon Rolls, Simply <a href='https://twinimon-rolls.github.io/website/landing-page.html' class='chat-link' target='_blank'>Visit our Landing page</a>. And Join Our Server. Its that simple and just simply grab your verified role in self roles. Make sure to read the rules and stay safe and have fun!",
+      bump: "To Bump our discord server simply navigate to the Bump Us channel in our discord and use /bump",
+      xpmethod1: "A Few ways you can earn XP in the Server is by: <br>1. Bumping Us Hourly, You will recieve 1K XP for Bumping our server. <br>2. you can Play PokeTwo and the Other Game Activity Bots. <br>3. Simply texting in the chat gives you XP.",
+      selfroles: "To get your own self roles in the server, Such as your age range. Your Faction. Name colors, Etc. Just simply navigate to the self roles channel in the discord and select your own roles.",
+      suggestion: "Have a idea but scared to reach out? DONT BE. We listen to your feedback ideas and suggestions all in our discord Suggestions channel.",
+      whoareyou: "I am the official Twinimon Rolls Support Bot. I am here to help you with any questions you may have about Twinimon Rolls. If you have any questions or need assistance, feel free to ask me!",
+      staticstats: "Static Stats means that the statistics displayed on your current page are manually and human updated and are not actually live or 24/7 automated.",
+      applynow: "Moderator & Higher Applications are currently coming soon, please return in the future!",
+      thelore: "Lore coming soon, check back for updates!",
+      unbanappeal: "Currently Unban/Banned Appeals are not available, Please return in the future!",
+      userphone: "To use the user phone its very easy here is a in simple guide on how to use the commands: <br><br>Cross‑Server Phones<br>--speakerphone – Chat with a random user in another server.<br>--userphone – Pick up a call with a random user.<br>--eyephone – Eye‑phone mode.<br>--flipphone – Flip your conversation.<br>--scramblephone – Scrambled chat with random users.<br>--hangup – End a phone call.<br><br>Fun & Games<br>--bird, --cat, --dog, --fox, --snake, --panda – Show random animal images.<br>--choose First Second ... – Make a decision.<br>--8ball – Ask the Magic 8‑ball.<br>--race [car] – Race with friends (random car if none specified).<br>--garage – View your car collection<br>--deathbattle @username – Battle someone in a death match.<br>--spinner [type] – Spin a fidget spinner (types: red, orange, yellow, green, mint, blue, purple, pink).<br>--ship @user1 @user2 – Check compatibility between two users.<br>--friendscore – See your friend compatibility score.<br><br>Soundboard<br>--airhorn, --brainpower, --cena, --cheer, --fakeping, --fakeerror, --knocking, --vsauce, --trombone, --wasted, and more.<br><br>For more help refer to this guide: <a href='https://blog.omggamer.com/how-to-use-yggdrasil-bot-in-yggdrasil-bot-commands/' class='chat-link' target='_blank'>Click This Link</a>",
+    };
+
+    function renderQuestionButtons(filterText = '') {
+      Array.from(optionsMenu.querySelectorAll('.option-btn')).forEach(btn => btn.remove());
+      const filtered = allQuestions.filter(q => 
+        q.text.toLowerCase().includes(filterText.toLowerCase().trim())
+      );
+      filtered.forEach(q => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.setAttribute('data-topic', q.topic);
+        btn.innerText = q.text;
+        btn.addEventListener('click', handleOptionBtnClick);
+        optionsMenu.appendChild(btn);
+      });
+      if (!filtered.length) {
+        const noBtn = document.createElement('div');
+        noBtn.className = 'option-btn';
+        noBtn.style.color = '#888';
+        noBtn.innerText = 'No results found.';
+        noBtn.tabIndex = -1;
+        noBtn.style.cursor = 'default';
+        optionsMenu.appendChild(noBtn);
+      }
+    }
+
+    fakeInput.addEventListener('click', () => {
+      const menuActive = optionsMenu.classList.toggle('active');
+      if (menuActive) {
+        inputPlaceholder.innerText = "Select a topic or search...";
+        searchInput.value = '';
+        searchInput.classList.add('active');
+        renderQuestionButtons('');
+        searchInput.focus();
+      } else {
+        inputPlaceholder.innerText = "Message Twinimon Support...";
+        searchInput.classList.remove('active');
+      }
+    });
+
+    function handleOptionBtnClick(e) {
+      const userText = e.target.innerText;
+      const topic = e.target.getAttribute('data-topic');
+
+      optionsMenu.classList.remove('active');
+      inputPlaceholder.innerText = "Message Twinimon Support...";
+      searchInput.classList.remove('active');
+
+      addMessage(userText, 'user');
+
+      setTimeout(() => {
+        showTypingIndicator(true);
+        setTimeout(() => {
+          const responseText = botResponses[topic];
+          addMessage(responseText, 'bot', {typewriter: true});
+          showTypingIndicator(false);
+        }, 850);
+      }, 100);
+    }
+
+    optionButtons.forEach(button => {
+      button.addEventListener('click', handleOptionBtnClick);
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value;
+      renderQuestionButtons(term);
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const currentBtns = optionsMenu.querySelectorAll('.option-btn');
+        for (let btn of currentBtns) {
+          if (btn.dataset.topic) {
+            btn.click();
+            break;
+          }
+        }
+      }
+      const btns = optionsMenu.querySelectorAll('.option-btn');
+      let idx = Array.from(btns).findIndex(btn => btn === document.activeElement);
+      if ((e.key === "ArrowDown" || e.key === "ArrowUp") && btns.length) {
+        e.preventDefault();
+        if (idx === -1) {
+          idx = (e.key === "ArrowDown") ? 0 : btns.length - 1;
+        } else {
+          idx = (e.key === "ArrowDown") ? (idx + 1) % btns.length : (idx - 1 + btns.length) % btns.length;
+        }
+        btns[idx].focus();
+      }
+    });
+
+    function showTypingIndicator(show = true) {
+      if (show) {
+        typingIndicator.classList.remove('hidden');
+      } else {
+        typingIndicator.classList.add('hidden');
+      }
+    }
+
+    function resetChat() {
+      chatBody.innerHTML = '';
+      addMessage(`Hello. I am the virtual support assistant for Twinimon Rolls! How can I help you today?<br>
+          Also I am currently in Beta. The current loaded code is Ver 1.2.1. New updates and responses will be added in the future.<br><br>
+          This is a PromptPad. You can select topics by clicking the message box but cannot type direct messages. This is a static PromptPad. Not AI`, 'bot');
+    }
+
+    function addMessage(text, sender, opts = {}) {
+      const wrapperDiv = document.createElement('div');
+      wrapperDiv.className = `message-wrapper ${sender}`;
+
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'sender-label';
+      labelDiv.innerText = sender === 'bot' ? 'Twinimon Support' : 'You';
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message`;
+
+      wrapperDiv.appendChild(labelDiv);
+      wrapperDiv.appendChild(messageDiv);
+      chatBody.appendChild(wrapperDiv);
+
+      function scrollToBottom() {
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      if (sender !== 'bot' || !opts.typewriter) {
+        if (/<br\s*\/?>|<a\s/i.test(text)) {
+          messageDiv.innerHTML = text;
+        } else {
+          messageDiv.innerText = text;
+        }
+        scrollToBottom();
+        return;
+      }
+
+      let chunks = [];
+      let parser = new DOMParser();
+      let docfrag = parser.parseFromString("<div>" + text + "</div>", 'text/html').body.firstChild;
+
+      function walk(node) {
+        if (node.nodeType === 3) {
+          let s = node.textContent || "";
+          for (let ch of s) {
+            chunks.push({type: 'char', val: ch});
+          }
+        } else if (node.nodeType === 1 && node.tagName.toLowerCase() === "br") {
+          chunks.push({type: 'br'});
+        } else if (node.nodeType === 1 && node.tagName.toLowerCase() === "a") {
+          const outer = node.cloneNode(true);
+          chunks.push({type: 'a', html: outer.outerHTML});
+        } else if (node.nodeType === 1) {
+          for (let child of node.childNodes)
+            walk(child);
+        }
+      }
+      for (let node of docfrag.childNodes) {
+        walk(node);
+      }
+
+      function typeWriterAnimation(chunks, onDone) {
+        let i = 0, tmpHTML = "";
+
+        function next() {
+          if (i >= chunks.length) {
+            if (onDone) onDone();
+            scrollToBottom();
+            return;
+          }
+          let c = chunks[i];
+          if (c.type === 'char') {
+            tmpHTML += c.val.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            messageDiv.innerHTML = tmpHTML;
+            i++;
+            scrollToBottom();
+            setTimeout(next, 7 + (c.val === " " ? 5 : 0));
+          }
+          else if (c.type === 'br') {
+            tmpHTML += "<br>";
+            messageDiv.innerHTML = tmpHTML;
+            i++;
+            scrollToBottom();
+            setTimeout(next, 6);
+          }
+          else if (c.type === 'a') {
+            tmpHTML += c.html;
+            messageDiv.innerHTML = tmpHTML;
+            i++;
+            scrollToBottom();
+            setTimeout(next, 55);
+          }
+          else {
+            i++;
+            setTimeout(next, 5);
+          }
+        }
+        next();
+      }
+
+      messageDiv.innerHTML = "";
+      typeWriterAnimation(chunks);
+    }
+  </script>
+  <script src="navbar.js"></script>
+  <script src="../scripts/snowfall.js"></script>
+</body>
+</html>
