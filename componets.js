@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <li><a href="index.html#about">About Us</a></li>
         <li><a href="index.html#features">Features</a></li>
         <li><a href="static-stats.html">Static Stats</a></li>
-        <li><a href="support-chat/index.html">Support Chat (BETA)</a></li>
+        <li><a href="support-chat/index.html">Support Chat</a></li>
         <li><a href="card-central/dashboard.html">Card Central</a></li>
         <li><a href="index.html#community">Community</a></li>
       </ul>
@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <li><a href="index.html#about" class="mobile-link">About Us</a></li>
         <li><a href="index.html#features" class="mobile-link">Features</a></li>
         <li><a href="static-stats.html" class="mobile-link">Static Stats</a></li>
-        <li><a href="support-chat/index.html" class="mobile-link">Support Chat (BETA)</a></li>
+        <li><a href="support-chat/index.html" class="mobile-link">Support Chat</a></li>
         <li><a href="index.html#community" class="mobile-link">Community</a></li>
       </ul>
       <a href="landing-page.html" class="btn btn-discord">
